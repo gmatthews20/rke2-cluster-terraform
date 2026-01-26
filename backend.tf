@@ -6,10 +6,14 @@ terraform {
     region     = "RegionOne"
     access_key = ""
     secret_key = ""
+    key        = "terraform.tfstate"
     endpoints = {
       s3 = "https://s3.echo.stfc.ac.uk"
     }
     # Required for using with ceph s3
+    # Also need:
+    # export AWS_REQUEST_CHECKSUM_CALCULATION=when_required
+    # export AWS_RESPONSE_CHECKSUM_VALIDATION=when_required
     skip_credentials_validation = true
     skip_requesting_account_id  = true
     skip_s3_checksum            = true
