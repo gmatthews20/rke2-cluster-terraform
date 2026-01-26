@@ -19,6 +19,8 @@ module "control-plane" {
   # port = module.cluster-network.ip_addr
   cluster_network = module.cluster-network.cluster-network
   secgroup        = module.cluster-network.control-plane-secgroup
+
+  depends_on = [module.cluster-network]
 }
 
 module "workers" {
@@ -30,4 +32,6 @@ module "workers" {
   token           = module.control-plane.token
   cluster_network = module.cluster-network.cluster-network
   secgroup        = module.cluster-network.control-plane-secgroup
+
+  depends_on = [module.cluster-network, module.control-plane]
 }
