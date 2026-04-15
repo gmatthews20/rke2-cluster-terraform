@@ -26,7 +26,7 @@ locals {
 }
 
 resource "openstack_compute_instance_v2" "control-nodes" {
-  name            = format("%s-%s", "basic", random_pet.server_name[count.index+1].id)
+  name            = format("%s-%s", "control", random_pet.server_name[count.index + 1].id)
   count           = 3-1
   image_name      = "ubuntu-noble-24.04-nogui"
   flavor_name     = "l3.nano"
@@ -86,7 +86,7 @@ resource "time_sleep" "sync-control-plane" {
 
 resource "openstack_compute_instance_v2" "master-node" {
   depends_on = [time_sleep.sync-control-plane]
-  name            = format("%s-%s", "basic", random_pet.server_name[0].id)
+  name            = format("%s-%s", "control", random_pet.server_name[0].id)
   image_name      = "ubuntu-noble-24.04-nogui"
   flavor_name     = "l3.nano"
   security_groups = ["default", var.secgroup]

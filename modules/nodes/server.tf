@@ -3,8 +3,8 @@ resource "random_pet" "server_name" {
   count  = 3
 }
 
-resource "openstack_compute_instance_v2" "basic" {
-  name            = format("%s-%s", "basic", random_pet.server_name[count.index].id)
+resource "openstack_compute_instance_v2" "worker" {
+  name            = format("%s-%s", "worker", random_pet.server_name[count.index].id)
   count           = 3
   image_name      = "ubuntu-noble-24.04-nogui"
   flavor_name     = "l3.nano"
