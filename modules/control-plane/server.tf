@@ -27,7 +27,7 @@ locals {
 
 resource "openstack_compute_instance_v2" "control-nodes" {
   name            = format("%s-%s", "control", random_pet.server_name[count.index + 1].id)
-  count           = 3-1
+  count           = 3 - 1
   image_name      = "ubuntu-noble-24.04-nogui"
   flavor_name     = "l3.nano"
   security_groups = ["default", var.secgroup]
@@ -39,11 +39,11 @@ resource "openstack_compute_instance_v2" "control-nodes" {
   user_data = templatefile("${path.module}/rke2-init.tftpl", { rke2_config = base64encode(yamlencode({
     "server" : format("https://%s:9345", local.master_server),
     # WIP Cloud provider setup
-    "cloud-provider-name": "openstack",
-    "cloud-provider-config": ""
-    "token": random_password.password.result,
-    "debug": true,
-    "with-node-id": true,
+    "cloud-provider-name" : "openstack",
+    "cloud-provider-config" : ""
+    "token" : random_password.password.result,
+    "debug" : true,
+    "with-node-id" : true,
     # WIP IRIS IAM integration
     # "kube-apiserver-arg": [
     #   "--oidc-issuer-url=https://iris-iam.stfc.ac.uk/",
@@ -79,13 +79,13 @@ resource "openstack_compute_instance_v2" "control-nodes" {
 }
 
 resource "time_sleep" "sync-control-plane" {
-  depends_on = [openstack_compute_instance_v2.control-nodes]
+  depends_on       = [openstack_compute_instance_v2.control-nodes]
   destroy_duration = "120s"
 }
 
 
 resource "openstack_compute_instance_v2" "master-node" {
-  depends_on = [time_sleep.sync-control-plane]
+  depends_on      = [time_sleep.sync-control-plane]
   name            = format("%s-%s", "control", random_pet.server_name[0].id)
   image_name      = "ubuntu-noble-24.04-nogui"
   flavor_name     = "l3.nano"
@@ -93,9 +93,9 @@ resource "openstack_compute_instance_v2" "master-node" {
 
   user_data = templatefile("${path.module}/rke2-init.tftpl", { rke2_config = base64encode(yamlencode({
     "server" : "",
-    "token": random_password.password.result,
-    "debug": true,
-    "with-node-id": true,
+    "token" : random_password.password.result,
+    "debug" : true,
+    "with-node-id" : true,
     # WIP IRIS IAM integration
     # "kube-apiserver-arg": [
     #   "--oidc-issuer-url=https://iris-iam.stfc.ac.uk/",
