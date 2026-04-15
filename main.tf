@@ -24,6 +24,13 @@ module "control-plane" {
   secgroup        = module.cluster-network.control-plane-secgroup
   kubeapi_pool    = module.cluster-network.kubeapi_pool
 
+  root_ca_cert         = module.tls-certs.root_ca_cert
+  intermediate_ca_cert = module.tls-certs.intermediate_ca_cert
+
+  leaf_ca_key  = module.tls-certs.leaf_ca_key
+  leaf_ca_cert = module.tls-certs.leaf_ca_cert
+
+  service_key = module.tls-certs.service_key
 
   depends_on = [module.cluster-network]
 }
@@ -37,6 +44,14 @@ module "workers" {
   token           = module.control-plane.token
   cluster_network = module.cluster-network.cluster-network
   secgroup        = module.cluster-network.control-plane-secgroup
+
+  root_ca_cert         = module.tls-certs.root_ca_cert
+  intermediate_ca_cert = module.tls-certs.intermediate_ca_cert
+
+  leaf_ca_key  = module.tls-certs.leaf_ca_key
+  leaf_ca_cert = module.tls-certs.leaf_ca_cert
+
+  service_key = module.tls-certs.service_key
 
   depends_on = [module.cluster-network, module.control-plane]
 }

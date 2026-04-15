@@ -36,7 +36,7 @@ resource "openstack_compute_instance_v2" "control-nodes" {
     create_before_destroy = true
   }
 
-  user_data = templatefile("${path.module}/rke2-bootstrap.tftpl", { rke2_config = base64encode(yamlencode({
+  user_data = templatefile("${path.module}/rke2-init.tftpl", { rke2_config = base64encode(yamlencode({
     "server" : format("https://%s:9345", local.master_server),
     # WIP Cloud provider setup
     "cloud-provider-name": "openstack",
@@ -53,7 +53,12 @@ resource "openstack_compute_instance_v2" "control-nodes" {
     #   "--oidc-username-prefix=oidc:",
     #   "--oidc-groups-prefix=oidc:",
     # ]
-  })) })
+    })), server_ca_cert = base64encode(format("%s%s%s", var.leaf_ca_cert["server"].cert_pem, var.intermediate_ca_cert.cert_pem, var.root_ca_cert.cert_pem)), server_ca_key = base64encode(var.leaf_ca_key["server"].private_key_pem),
+    client_ca_cert      = base64encode(format("%s%s%s", var.leaf_ca_cert["client"].cert_pem, var.intermediate_ca_cert.cert_pem, var.root_ca_cert.cert_pem)), client_ca_key = base64encode(var.leaf_ca_key["client"].private_key_pem),
+    request_ca_cert     = base64encode(format("%s%s%s", var.leaf_ca_cert["request-header"].cert_pem, var.intermediate_ca_cert.cert_pem, var.root_ca_cert.cert_pem)), request_ca_key = base64encode(var.leaf_ca_key["request-header"].private_key_pem),
+    etcd_peer_ca_cert   = base64encode(format("%s%s%s", var.leaf_ca_cert["etcd/peer"].cert_pem, var.intermediate_ca_cert.cert_pem, var.root_ca_cert.cert_pem)), etcd_peer_ca_key = base64encode(var.leaf_ca_key["etcd/peer"].private_key_pem),
+    etcd_server_ca_cert = base64encode(format("%s%s%s", var.leaf_ca_cert["etcd/server"].cert_pem, var.intermediate_ca_cert.cert_pem, var.root_ca_cert.cert_pem)), etcd_server_ca_key = base64encode(var.leaf_ca_key["etcd/server"].private_key_pem),
+  service_key = base64encode(var.service_key.private_key_pem) })
 
   scheduler_hints {
     group = openstack_compute_servergroup_v2.control-plane-servergroup.id
@@ -86,7 +91,7 @@ resource "openstack_compute_instance_v2" "master-node" {
   flavor_name     = "l3.nano"
   security_groups = ["default", var.secgroup]
 
-  user_data = templatefile("${path.module}/rke2-bootstrap.tftpl", { rke2_config = base64encode(yamlencode({
+  user_data = templatefile("${path.module}/rke2-init.tftpl", { rke2_config = base64encode(yamlencode({
     "server" : "",
     "token": random_password.password.result,
     "debug": true,
@@ -100,7 +105,13 @@ resource "openstack_compute_instance_v2" "master-node" {
     #   "--oidc-username-prefix=oidc:",
     #   "--oidc-groups-prefix=oidc:",
     # ]
-  })) })
+    })), server_ca_cert = base64encode(format("%s%s%s", var.leaf_ca_cert["server"].cert_pem, var.intermediate_ca_cert.cert_pem, var.root_ca_cert.cert_pem)), server_ca_key = base64encode(var.leaf_ca_key["server"].private_key_pem),
+    client_ca_cert      = base64encode(format("%s%s%s", var.leaf_ca_cert["client"].cert_pem, var.intermediate_ca_cert.cert_pem, var.root_ca_cert.cert_pem)), client_ca_key = base64encode(var.leaf_ca_key["client"].private_key_pem),
+    request_ca_cert     = base64encode(format("%s%s%s", var.leaf_ca_cert["request-header"].cert_pem, var.intermediate_ca_cert.cert_pem, var.root_ca_cert.cert_pem)), request_ca_key = base64encode(var.leaf_ca_key["request-header"].private_key_pem),
+    etcd_peer_ca_cert   = base64encode(format("%s%s%s", var.leaf_ca_cert["etcd/peer"].cert_pem, var.intermediate_ca_cert.cert_pem, var.root_ca_cert.cert_pem)), etcd_peer_ca_key = base64encode(var.leaf_ca_key["etcd/peer"].private_key_pem),
+    etcd_server_ca_cert = base64encode(format("%s%s%s", var.leaf_ca_cert["etcd/server"].cert_pem, var.intermediate_ca_cert.cert_pem, var.root_ca_cert.cert_pem)), etcd_server_ca_key = base64encode(var.leaf_ca_key["etcd/server"].private_key_pem),
+    service_key         = base64encode(var.service_key.private_key_pem)
+  })
 
   scheduler_hints {
     group = openstack_compute_servergroup_v2.control-plane-servergroup.id

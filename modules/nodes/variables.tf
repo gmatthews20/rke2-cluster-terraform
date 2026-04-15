@@ -22,6 +22,17 @@ variable "cluster_network" {
 variable "token" {
 }
 
+variable "leaf_ca_key" {
+}
+variable "leaf_ca_cert" {
+}
+variable "service_key" {
+}
+variable "root_ca_cert" {
+}
+variable "intermediate_ca_cert" {
+}
+
 variable "os_application_credential_id" {
   type        = string
   description = "Openstack applicaion credential id"
