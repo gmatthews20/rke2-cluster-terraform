@@ -9,3 +9,6 @@ output "control-plane-secgroup" {
 output "cluster-network" {
   value = openstack_networking_network_v2.network_1.id
 }
+output "kubeapi_pool" {
+  value = openstack_lb_pool_v2.pool_1.id
+}

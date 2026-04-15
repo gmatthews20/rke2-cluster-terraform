@@ -18,6 +18,8 @@ variable "secgroup" {
 
 variable "cluster_network" {
 }
+variable "kubeapi_pool" {
+}
 
 variable "os_application_credential_id" {
   type        = string

@@ -112,7 +112,7 @@ resource "openstack_compute_instance_v2" "master-node" {
 }
 
 resource "openstack_lb_members_v2" "members_1" {
-  pool_id = "eb6aee65-5514-4fae-bc2d-67aab34e8914"
+  pool_id = var.kubeapi_pool
 
   dynamic "member" {
     for_each = openstack_compute_instance_v2.control-nodes

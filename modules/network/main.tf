@@ -95,7 +95,7 @@ resource "openstack_networking_secgroup_rule_v2" "secgroup_rule_7" {
 }
 
 resource "openstack_networking_port_v2" "lb_vip_port" {
-  name = "lb_vip_port"
+  name           = "lb_vip_port"
   network_id     = openstack_networking_network_v2.network_1.id
   admin_state_up = "true"
 
@@ -107,7 +107,7 @@ resource "openstack_networking_port_v2" "lb_vip_port" {
 }
 
 resource "openstack_lb_loadbalancer_v2" "lb_1" {
-  name = "rke2-cluster-lb"
+  name        = "rke2-cluster-lb"
   vip_port_id = openstack_networking_port_v2.lb_vip_port.id
 }
 
@@ -115,14 +115,14 @@ resource "openstack_lb_listener_v2" "listener_1" {
   protocol        = "TCP"
   protocol_port   = 6443
   loadbalancer_id = openstack_lb_loadbalancer_v2.lb_1.id
-  name = "kubeapi"
+  name            = "kubeapi"
 }
 
 resource "openstack_lb_pool_v2" "pool_1" {
   protocol    = "TCP"
   lb_method   = "ROUND_ROBIN"
   listener_id = openstack_lb_listener_v2.listener_1.id
-  name = "kubeapi"
+  name        = "kubeapi"
 }
 
 # resource "openstack_lb_member_v2" "members_1" {
