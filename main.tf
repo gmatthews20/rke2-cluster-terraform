@@ -4,6 +4,9 @@ provider "openstack" {
 }
 
 
+module "tls-certs" {
+  source = "./modules/tls"
+}
 module "cluster-network" {
   source = "./modules/network"
 
